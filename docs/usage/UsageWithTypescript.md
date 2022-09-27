@@ -87,7 +87,7 @@ import type { RootState, AppDispatch } from './store'
 
 // highlight-start
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 // highlight-end
 ```
@@ -180,6 +180,26 @@ export function Counter() {
 }
 ```
 
+:::tip Warn about wrong imports
+
+ESLint can help your team import the right hooks easily. The [typescript-eslint/no-restricted-imports](https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-restricted-imports.md) rule can show a warning when the wrong import is used accidentally.
+
+You could add this to your ESLint config as an example:
+
+```json
+"no-restricted-imports": "off",
+"@typescript-eslint/no-restricted-imports": [
+  "warn",
+  {
+    "name": "react-redux",
+    "importNames": ["useSelector", "useDispatch"],
+    "message": "Use typed hooks `useAppDispatch` and `useAppSelector` instead."
+  }
+],
+```
+
+:::
+
 ## Typing Additional Redux Logic
 
 ### Type Checking Reducers
@@ -245,6 +265,22 @@ In cases where `type RootState = ReturnType<typeof store.getState>` is used, a [
 ```ts
 const rootReducer = combineReducers({ ... });
 type RootState = ReturnType<typeof rootReducer>;
+```
+
+Switching the type definition of `RootState` with Redux Toolkit example:
+
+```ts
+//instead of defining the reducers in the reducer field of configureStore, combine them here:
+const rootReducer = combineReducers({ counter: counterReducer })
+
+//then set rootReducer as the reducer object of configureStore
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(yourMiddleware)
+})
+
+type RootState = ReturnType<typeof rootReducer>
 ```
 
 ### Type Checking Redux Thunks

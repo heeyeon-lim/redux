@@ -3,6 +3,7 @@ module.exports = {
     Introduction: [
       'introduction/getting-started',
       'introduction/installation',
+      'introduction/why-rtk-is-redux-today',
       'introduction/core-concepts',
       'introduction/learning-resources',
       'introduction/ecosystem',
@@ -39,7 +40,8 @@ module.exports = {
           'tutorials/fundamentals/part-7-standard-patterns',
           'tutorials/fundamentals/part-8-modern-redux'
         ]
-      }
+      },
+      'tutorials/videos'
     ],
     'Using Redux': [
       'usage/index',
