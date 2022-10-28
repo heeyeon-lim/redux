@@ -1,7 +1,7 @@
 const { resolve } = require('path')
 const {
   linkDocblocks,
-  transpileCodeblocks,
+  transpileCodeblocks
 } = require('remark-typescript-tools')
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
   projectName: 'redux',
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'ko'],
+    locales: ['en', 'ko']
   },
   themeConfig: {
     image: 'img/redux-logo-landscape.png',
@@ -144,7 +144,8 @@ module.exports = {
       copyright: `Copyright © 2015–${new Date().getFullYear()} Dan Abramov and the Redux documentation authors.`
     },
     algolia: {
-      apiKey: '6107029bf433fe53adc236974dcc2e28',
+      appId: '45GSH5CLSZ',
+      apiKey: '5a44abbe04b2f0cc654b284ea9149f18',
       indexName: 'redux-ko',
       algoliaOptions: {}
     }
@@ -166,11 +167,9 @@ module.exports = {
                 extractorSettings: {
                   tsconfig: resolve(__dirname, './tsconfig.json'),
                   basedir: resolve(__dirname, '../src'),
-                  rootFiles: [
-                    'index.ts',
-                  ],
-                },
-              },
+                  rootFiles: ['index.ts']
+                }
+              }
             ],
             [
               transpileCodeblocks,
@@ -178,17 +177,15 @@ module.exports = {
                 compilerSettings: {
                   tsconfig: resolve(__dirname, './tsconfig.json'),
                   externalResolutions: {},
-                  transformVirtualFilepath: (path) => path.replace('/docs/', '/website/')
-                },
-              },
-            ],
-          ],
+                  transformVirtualFilepath: path =>
+                    path.replace('/docs/', '/website/')
+                }
+              }
+            ]
+          ]
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
-        },
-        googleAnalytics: {
-          trackingID: 'UA-130598673-1'
         }
       }
     ]
