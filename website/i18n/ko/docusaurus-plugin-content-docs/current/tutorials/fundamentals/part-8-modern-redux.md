@@ -214,7 +214,10 @@ Let's look at a small standalone example first.
 ```js title="createSlice  example"
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = []
+const initialState = {
+  entities: [],
+  status: null
+}
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -222,10 +225,10 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       // ✅ This "mutating" code is okay inside of createSlice!
-      state.push(action.payload)
+      state.entities.push(action.payload)
     },
     todoToggled(state, action) {
-      const todo = state.find(todo => todo.id === action.payload)
+      const todo = state.entities.find(todo => todo.id === action.payload)
       todo.completed = !todo.completed
     },
     todosLoading(state, action) {
@@ -868,7 +871,7 @@ However, our [**"Redux 핵심" tutorial**](../essentials/part-1-overview-concept
 
 At the same time, the concepts we've covered in this tutorial should be enough to get you started building your own applications using React and Redux. Now's a great time to try working on a project yourself to solidify these concepts and see how they work in practice. If you're not sure what kind of a project to build, see [this list of app project ideas](https://github.com/florinpop17/app-ideas) for some inspiration.
 
-The [Using Redux](../../usage/index.md) section has information on a number of important concepts, like [how to structure your reducers](../../usage/structuring-reducers/StructuringReducers.md), and [**our Style Guide page**](../../style-guide/style-guide) has important information on our recommended patterns and best practices.
+The [Using Redux](../../usage/index.md) section has information on a number of important concepts, like [how to structure your reducers](../../usage/structuring-reducers/StructuringReducers.md), and [**our Style Guide page**](../../style-guide/style-guide.md) has important information on our recommended patterns and best practices.
 
 If you'd like to know more about _why_ Redux exists, what problems it tries to solve, and how it's meant to be used, see Redux maintainer Mark Erikson's posts on [The Tao of Redux, Part 1: Implementation and Intent](https://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-1/) and [The Tao of Redux, Part 2: Practice and Philosophy](https://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-2/).
 

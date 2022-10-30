@@ -7,8 +7,6 @@ description: 'The official Redux 핵심 튜토리얼: learn the structure of a t
 
 import { DetailedExplanation } from '../../components/DetailedExplanation'
 
-# Redux 핵심, Part 2: Redux App Structure
-
 :::tip What You'll Learn
 
 - The structure of a typical React + Redux app
@@ -250,7 +248,7 @@ Earlier, we saw that clicking the different buttons in the UI dispatched three d
 - `{type: "counter/decrement"}`
 - `{type: "counter/incrementByAmount"}`
 
-We know that actions are plain objects with a `type` field, that the `type` field is always a string, and that we typically have "action creator" functions that create and return the action objects. So where are those action objects, type strings, and action creators defined?
+We know that actions are plain objects with a `type` field, the `type` field is always a string, and we typically have "action creator" functions that create and return the action objects. So where are those action objects, type strings, and action creators defined?
 
 We _could_ write those all by hand, every time. But, that would be tedious. Besides, what's _really_ important in Redux is the reducer functions, and the logic they have for calculating new state.
 
@@ -300,6 +298,8 @@ The rule about "immutable updates" is particularly important, and worth talking 
 Earlier, we talked about "mutation" (modifying existing object/array values) and "immutability" (treating values as something that cannot be changed).
 
 In Redux, **our reducers are _never_ allowed to mutate the original / current state values!**
+
+:::warning
 
 ```js
 // ❌ Illegal - by default, this will mutate the state!
@@ -492,13 +492,16 @@ The Redux store can be extended with "middleware", which are a kind of add-on or
 The Redux Thunk middleware modifies the store to let you pass functions into `dispatch`. In fact, it's short enough we can paste it here:
 
 ```js
-const thunkMiddleware = ({ dispatch, getState }) => next => action => {
-  if (typeof action === 'function') {
-    return action(dispatch, getState, extraArgument)
-  }
+const thunkMiddleware =
+  ({ dispatch, getState }) =>
+  next =>
+  action => {
+    if (typeof action === 'function') {
+      return action(dispatch, getState)
+    }
 
-  return next(action)
-}
+    return next(action)
+  }
 ```
 
 It looks to see if the "action" that was passed into `dispatch` is actually a function instead of a plain action object. If it's actually a function, it calls the function, and returns the result. Otherwise, since this must be an action object, it passes the action forward to the store.

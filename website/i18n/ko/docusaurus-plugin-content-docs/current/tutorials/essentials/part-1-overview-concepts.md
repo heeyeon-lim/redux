@@ -7,8 +7,6 @@ description: 'The official Essentials tutorial for Redux: learn how to use Redux
 
 import { DetailedExplanation } from '../../components/DetailedExplanation'
 
-# Redux 핵심, Part 1: Redux Overview and Concepts
-
 :::tip What You'll Learn
 
 - What Redux is and why you might want to use it
@@ -101,7 +99,7 @@ Redux can integrate with any UI framework, and is most frequently used with Reac
 
 #### Redux DevTools Extension
 
-The [**Redux DevTools Extension**](https://github.com/zalmoxisus/redux-devtools-extension) shows a history of the changes to the state in your Redux store over time. This allows you to debug your applications effectively, including using powerful techniques like "time-travel debugging".
+The [**Redux DevTools Extension**](https://github.com/reduxjs/redux-devtools/tree/main/extension) shows a history of the changes to the state in your Redux store over time. This allows you to debug your applications effectively, including using powerful techniques like "time-travel debugging".
 
 ## Redux Terms and Concepts
 

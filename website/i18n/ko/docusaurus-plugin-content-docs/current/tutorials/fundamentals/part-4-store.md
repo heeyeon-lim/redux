@@ -150,7 +150,7 @@ Redux state changes as each action was dispatched:
 
 ![Logged Redux state after dispatching actions](/img/tutorials/fundamentals/initial-state-updates.png)
 
-Notice that our app did _not_ log anything from the last action. That's because we removed the listener callback when we called `unsubscribe()`, so nothing else ran when after the action was dispatched.
+Notice that our app did _not_ log anything from the last action. That's because we removed the listener callback when we called `unsubscribe()`, so nothing else ran after the action was dispatched.
 
 We specified the behavior of our app before we even started writing the UI. That
 helps give us confidence that the app will work as intended.
@@ -431,7 +431,7 @@ function exampleMiddleware(storeAPI) {
 Let's break down what these three functions do and what their arguments are.
 
 - `exampleMiddleware`: The outer function is actually the "middleware" itself. It will be called by `applyMiddleware`, and receives a `storeAPI` object containing the store's `{dispatch, getState}` functions. These are the same `dispatch` and `getState` functions that are actually part of the store. If you call this `dispatch` function, it will send the action to the _start_ of the middleware pipeline. This is only called once.
-- `wrapDispatch`: The middle function receives a function called `next` as its argument. This function is actually the _next middleware_ in the pipeline. If this middleware is the last one in the sequence, then `next` is actually the original `store.dispatch` function instead. Calling `next(action)` passes the middleware to the _next_ middleware in the pipeline. This is also only called once
+- `wrapDispatch`: The middle function receives a function called `next` as its argument. This function is actually the _next middleware_ in the pipeline. If this middleware is the last one in the sequence, then `next` is actually the original `store.dispatch` function instead. Calling `next(action)` passes the action to the _next_ middleware in the pipeline. This is also only called once
 - `handleAction`: Finally, the inner function receives the current `action` as its argument, and will be called _every_ time an action is dispatched.
 
 :::tip
@@ -542,7 +542,7 @@ Finally, there's one more very important thing to cover with configuring the sto
 
 **Redux was specifically designed to make it easier to understand when, where, why, and how your state has changed over time**. As part of that, Redux was built to enable the use of the **Redux DevTools** - an addon that shows you a history of what actions were dispatched, what those actions contained, and how the state changed after each dispatched action.
 
-The Redux DevTools UI is available as a browser extension for [Chrome](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) and [Firefox](ttps://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/). If you haven't already added that to your browser, go ahead and do that now.
+The Redux DevTools UI is available as a browser extension for [Chrome](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/). If you haven't already added that to your browser, go ahead and do that now.
 
 Once that's installed, open up the browser's DevTools window. You should now see a new "Redux" tab there. It doesn't do anything, yet - we've got to set it up to talk to a Redux store first.
 
@@ -550,7 +550,7 @@ Once that's installed, open up the browser's DevTools window. You should now see
 
 Once the extension is installed, we need to configure the store so that the DevTools can see what's happening inside. The DevTools require a specific store enhancer to be added to make that possible.
 
-The [Redux DevTools Extension docs](https://github.com/zalmoxisus/redux-devtools-extension) have some instructions on how to set up the store, but the steps listed are a bit complicated. However, there's an NPM package called `redux-devtools-extension` that takes care of the complicated part. That package exports a specialized `composeWithDevTools` function that we can use instead of the original Redux `compose` function.
+The [Redux DevTools Extension docs](https://github.com/reduxjs/redux-devtools/tree/main/extension) have some instructions on how to set up the store, but the steps listed are a bit complicated. However, there's an NPM package called `redux-devtools-extension` that takes care of the complicated part. That package exports a specialized `composeWithDevTools` function that we can use instead of the original Redux `compose` function.
 
 Here's how that looks:
 

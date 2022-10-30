@@ -7,8 +7,6 @@ description: 'The official Redux 핵심 튜토리얼: learn how data flows in a 
 
 import { DetailedExplanation } from '../../components/DetailedExplanation'
 
-# Redux 핵심, Part 3: Basic Redux Data Flow
-
 :::tip What You'll Learn
 
 - How to add "slices" of reducer logic to the Redux store with `createSlice`
@@ -85,6 +83,7 @@ ReactDOM.render(
 
 Let's take a quick look at what the initial project contains:
 
+- `/public`: the HTML host page template and other static files like icons
 - `/src`
   - `index.js`: the entry point file for the application. It renders the React-Redux `<Provider>` component and the main `<App>` component.
   - `App.js`: the main application component. Renders the top navbar and handles client-side routing for the other content.
@@ -184,7 +183,7 @@ export const PostsList = () => {
 }
 ```
 
-We then need to update the routing in `App.js` so that we show the `PostsList` component instead of the "welcome" message. Import the `PostsList` component into `App.js`, and replace the welcome text with `<PostsList />`. We'll also wrap it in a React Fragment, because we're going to add something else to the main page soon:
+We then need to update the routing in `App.js` so that we show the `PostsList` component instead of the "welcome" message. Import the `PostsList` component into `App.js`, and replace the welcome text with `<PostsList />`. We'll also wrap it in a [React Fragment](https://reactjs.org/docs/fragments.html), because we're going to add something else to the main page soon:
 
 ```jsx title="App.js"
 import React from 'react'

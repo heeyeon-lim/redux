@@ -93,7 +93,7 @@ type Middleware = (api: MiddlewareAPI) => (next: Dispatch) => Dispatch
 
 미들웨어는 함수 결합을 통해 서로 결합할 수 있습니다. 이는 액션을 로깅하거나, 라우팅과 같은 부수효과를 일으키거나, 비동기 API 호출을 일련의 동기 액션으로 바꾸는데 유용합니다.
 
-미들웨어에 대해 자세히 알아보려면 [`applyMiddleware(...middlewares)`](./api/applyMiddleware.md)를 보세요.
+미들웨어에 대해 자세히 알아보려면 [`applyMiddleware(...middlewares)`](../../api/applyMiddleware.md)를 보세요.
 
 ## 저장소
 

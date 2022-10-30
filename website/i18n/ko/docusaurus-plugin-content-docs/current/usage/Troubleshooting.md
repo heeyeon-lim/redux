@@ -124,7 +124,7 @@ return state.map((todo, index) => {
 
 이 실험적인 언어 기능은 변경될 수 있음을 알아두세요.
 
-중첩된 상태 객체가 깊게 복사되도록 주의하세요. `_.extend`와 `Object.assign` 모두 상태를 얕게 복사합니다. 중첩된 상태를 어떻게 다룰지에 대한 제안은 [중첩된 객체 업데이트하기](./usage/structuring-reducers/ImmutableUpdatePatterns.md#updating-nested-objects)에서 볼 수 있습니다.
+중첩된 상태 객체가 깊게 복사되도록 주의하세요. `_.extend`와 `Object.assign` 모두 상태를 얕게 복사합니다. 중첩된 상태를 어떻게 다룰지에 대한 제안은 [중첩된 객체 업데이트하기](./structuring-reducers/ImmutableUpdatePatterns.md#updating-nested-objects)에서 볼 수 있습니다.
 
 #### [`dispatch(action)`](api/Store.md#dispatch)를 호출하는걸 잊지 마세요
 
@@ -156,7 +156,7 @@ class AddTodo extends Component {
 }
 ```
 
-액션 생산자는 단지 액션을 **반환하는** 함수일 뿐이기 때문에 이 코드는 작동하지 않습니다. 실제로 디스패치하는 것은 당신에게 달렸습니다. 서버에서 랜더링되는 앱의 경우 매 요청마다 별개의 저장소를 요구하기 때문에 액션 생산자를 정의하는 동안 특정 저장소 인스턴스에 바인드 할 수는 없습니다.
+액션 생산자는 단지 액션을 **반환하는** 함수일 뿐이기 때문에 이 코드는 작동하지 않습니다. 실제로 디스패치하는 것은 당신에게 달렸습니다. 서버에서 렌더링되는 앱의 경우 매 요청마다 별개의 저장소를 요구하기 때문에 액션 생산자를 정의하는 동안 특정 저장소 인스턴스에 바인드 할 수는 없습니다.
 
 [store](api/Store.md) 인스턴스의 [`dispatch()`](api/Store.md#dispatch) 메서드를 호출해서 고칠 수 있습니다:
 

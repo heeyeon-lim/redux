@@ -21,9 +21,9 @@ Redux API의 드러난 부분은 매우 작습니다. Redux는 ([reducers](../un
 
 - [Store](Store.md)
   - [getState()](Store.md#getState)
-  - [dispatch(action)](Store.md#dispatch)
-  - [subscribe(listener)](Store.md#subscribe)
-  - [replaceReducer(nextReducer)](Store.md#replaceReducer)
+  - [dispatch(action)](Store.md#dispatchaction)
+  - [subscribe(listener)](Store.md#subscribelistener)
+  - [replaceReducer(nextReducer)](Store.md#replacereducernextreducer)
 
 ### 임포트하기
 

@@ -83,7 +83,7 @@ Since Redux is a separate library, there are different "binding" libraries to he
 
 ## Using Redux with React
 
-The official [**React-Redux UI bindings library**](https://react-redux.js.org) is a separate package from the Redux core. You'll need to install that in addition as well:
+The official [**React-Redux UI bindings library**](https://react-redux.js.org) is a separate package from the Redux core. You'll need to install that in addition:
 
 ```sh
 npm install react-redux
@@ -101,7 +101,7 @@ See **the official React-Redux docs at https://react-redux.js.org** for a comple
 
 ### Designing the Component Tree
 
-Much like we [designed the state structure](./part-3-state-actions-reducers.md#designing-the-state-structure) based on requirements, we can also design the overall set of UI components and how they related to each other in the application.
+Much like we [designed the state structure](./part-3-state-actions-reducers.md#designing-the-state-structure) based on requirements, we can also design the overall set of UI components and how they relate to each other in the application.
 
 Based on [the list of business requirements for the app](./part-3-state-actions-reducers.md#defining-requirements), at a minimum we're going to need this set of components:
 
@@ -115,7 +115,7 @@ Beyond this basic component structure, we could potentially divide the component
 
 For now, we'll start with this small list of components to keep things easier to follow. On that note, since we assume that [you already know React](https://reactjs.org), **we're going to skip past the details of how to write the layout code for these components and focus on how to actually use the React-Redux library in your React components**.
 
-Here's the initial React UI of this app looks like before we start adding any Redux-related logic:
+Here's the initial React UI of this app before we start adding any Redux-related logic:
 
 <iframe
   class="codesandbox"
@@ -274,7 +274,7 @@ export default Header
 
 Our components can now read state from the store, and dispatch actions to the store. However, we're still missing something. Where and how are the React-Redux hooks finding the right Redux store? A hook is a JS function, so it can't automatically import a store from `store.js` by itself.
 
-Instead, we have to specifically tell React-Redux what store we want to use in our components. We do this by **rendering a `<Provider>` component around our entire `<App>`, and passing the Redux store as a prop to `<Provider>`**. After we do this once, every component in the application will be able to access the Redux store if needs to.
+Instead, we have to specifically tell React-Redux what store we want to use in our components. We do this by **rendering a `<Provider>` component around our entire `<App>`, and passing the Redux store as a prop to `<Provider>`**. After we do this once, every component in the application will be able to access the Redux store if it needs to.
 
 Let's add that to our main `index.js` file:
 
@@ -496,7 +496,7 @@ const TodoListItem = ({ id }) => {
 export default TodoListItem
 ```
 
-There's a problem with this, though. We said earlier that **returning new array references in selectors causes components to re-render every time**, and right now we're returning a new IDs array in `<TodoListItem>`. In this case, the _contents_ of the IDs array should be the same if we're toggling a todo, because we're still showing the same todo items - we haven't added or deleted any. But, the array _containing_ those IDs is a new reference, so `<TodoList>` will re-render when it really doesn't need to.
+There's a problem with this, though. We said earlier that **returning new array references in selectors causes components to re-render every time**, and right now we're returning a new IDs array in `<TodoList>`. In this case, the _contents_ of the IDs array should be the same if we're toggling a todo, because we're still showing the same todo items - we haven't added or deleted any. But, the array _containing_ those IDs is a new reference, so `<TodoList>` will re-render when it really doesn't need to.
 
 One possible solution to this is to change how `useSelector` compares its values to see if they've changed. `useSelector` can take a comparison function as its second argument. A comparison function is called with the old and new values, and returns `true` if they're considered the same. If they're the same, `useSelector` won't make the component re-render.
 
@@ -535,7 +535,7 @@ We now have a working todo app! Our app creates a store, passes the store to the
 
 Try implementing the rest of the missing UI features on your own! Here's a list of the things you'll need to add:
 
-- In `<TodoListItem>` component, use the `useDispatch` hook to dispatch actions to for changing the color category and deleting the todo
+- In `<TodoListItem>` component, use the `useDispatch` hook to dispatch actions for changing the color category and deleting the todo
 - In `<Footer>`, use the `useDispatch` hook to dispatch actions for marking all todos as completed, clearing completed todos, and changing the filter values.
 
 We'll cover implementing the filters in [Part 7: Standard Redux Patterns](./part-7-standard-patterns.md).

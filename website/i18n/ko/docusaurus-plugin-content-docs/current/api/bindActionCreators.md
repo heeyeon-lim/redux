@@ -50,7 +50,7 @@ export function removeTodo(id) {
 #### `SomeComponent.js`
 
 ```js
-import { Component } from 'react'
+import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -61,11 +61,26 @@ console.log(TodoActionCreators)
 //   removeTodo: Function
 // }
 
-class TodoListContainer extends Component {
-  componentDidMount() {
-    // Injected by react-redux:
-    let { dispatch } = this.props
+function TodoListContainer(props) {
+  // Injected by react-redux:
+  const { dispatch, todos } = props
 
+  // Here's a good use case for bindActionCreators:
+  // You want a child component to be completely unaware of Redux.
+  // We create bound versions of these functions now so we can
+  // pass them down to our child later.
+
+  const boundActionCreators = useMemo(
+    () => bindActionCreators(TodoActionCreators, dispatch),
+    [dispatch]
+  )
+  console.log(boundActionCreators)
+  // {
+  //   addTodo: Function,
+  //   removeTodo: Function
+  // }
+
+  useEffect(() => {
     // Note: this won't work:
     // TodoActionCreators.addTodo('Use Redux')
 
@@ -75,30 +90,15 @@ class TodoListContainer extends Component {
     // This will work:
     let action = TodoActionCreators.addTodo('Use Redux')
     dispatch(action)
-  }
+  }, [])
 
-  render() {
-    // Injected by react-redux:
-    let { todos, dispatch } = this.props
+  return <TodoList todos={todos} {...this.boundActionCreators} />
 
-    // Here's a good use case for bindActionCreators:
-    // You want a child component to be completely unaware of Redux.
+  // An alternative to bindActionCreators is to pass
+  // just the dispatch function down, but then your child component
+  // needs to import action creators and know about them.
 
-    let boundActionCreators = bindActionCreators(TodoActionCreators, dispatch)
-    console.log(boundActionCreators)
-    // {
-    //   addTodo: Function,
-    //   removeTodo: Function
-    // }
-
-    return <TodoList todos={todos} {...boundActionCreators} />
-
-    // An alternative to bindActionCreators is to pass
-    // just the dispatch function down, but then your child component
-    // needs to import action creators and know about them.
-
-    // return <TodoList todos={todos} dispatch={dispatch} />
-  }
+  // return <TodoList todos={todos} dispatch={dispatch} />
 }
 
 export default connect(state => ({ todos: state.todos }))(TodoListContainer)
@@ -106,6 +106,6 @@ export default connect(state => ({ todos: state.todos }))(TodoListContainer)
 
 #### 팁
 
-- 왜 전통적인 Flux처럼 액션 생산자를 저장소 인스턴스에 바로 바인드하지 않는지 물을 수도 있습니다. 문제는 그 방법이 서버에서 랜더해야 하는 유니버설 앱에서는 잘 작동하지 않는다는겁니다. 보통은 매 요청마다 서로 다른 데이터로 저장소 인스턴스를 준비해야 하지만, 액션 생산자를 선언 중에 바인드하면 모든 요청에 대해 하나의 저장소 인스턴스 밖에 쓸 수 없습니다.
+- 왜 전통적인 Flux처럼 액션 생산자를 저장소 인스턴스에 바로 바인드하지 않는지 물을 수도 있습니다. 문제는 그 방법이 서버에서 렌더해야 하는 유니버설 앱에서는 잘 작동하지 않는다는겁니다. 보통은 매 요청마다 서로 다른 데이터로 저장소 인스턴스를 준비해야 하지만, 액션 생산자를 선언 중에 바인드하면 모든 요청에 대해 하나의 저장소 인스턴스 밖에 쓸 수 없습니다.
 
 - ES5를 사용한다면 `import * as` 대신 `require('./TodoActionCreators')`를 `bindActionCreators`의 첫번째 인수로 넘기면 됩니다. 모듈 시스템과는 상관 없이 `actionCreators`의 인수 값이 함수이기만 하면 됩니다.
