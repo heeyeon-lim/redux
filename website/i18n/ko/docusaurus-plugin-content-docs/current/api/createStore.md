@@ -38,7 +38,7 @@ function todos(state = [], action) {
   }
 }
 
-let store = createStore(todos, ['Use Redux'])
+const store = createStore(todos, ['Use Redux'])
 
 store.dispatch({
   type: 'ADD_TODO',
@@ -57,7 +57,7 @@ console.log(store.getState())
 
 - 상태가 평범한 객체라면, 절대 변경하지 않도록 하세요! 예를 들어 리듀서에서 `Object.assign(state, newData)` 같은 것을 반환하는 대신 `Object.assign({}, state, newData)`를 반환하세요. 이를 통해 이전 상태를 덮어쓰지 않을 수 있습니다. [객체 확산 연산자 제안](../usage/UsingObjectSpreadOperator.md)을 사용한다면 `return { ...state, ...newData }`처럼 쓸 수도 있습니다.
 
-- 서버에서 실행되는 유니버셜 앱을 위해서는 매 요청마다 별개의 저장소 인스턴스를 만드세요. 저장소 인스턴스에 데이터를 가져오는 액션을 보낸 다음 완료되면 서버에서 앱을 랜더링하면 됩니다.
+- 서버에서 실행되는 유니버셜 앱을 위해서는 매 요청마다 별개의 저장소 인스턴스를 만드세요. 저장소 인스턴스에 데이터를 가져오는 액션을 보낸 다음 완료되면 서버에서 앱을 렌더링하면 됩니다.
 
 - 저장소가 생성되면, Redux는 최초의 상태를 가지는 저장소를 만들기 위해 더미 액션을 보냅니다. 이 액션을 직접 다뤄야 하는 것은 아닙니다. 단지 여러분의 리듀서가 `undefined`를 인수로 받았을 때 최초 상태를 반환해야 한다는 점만 기억해두면 됩니다.
 

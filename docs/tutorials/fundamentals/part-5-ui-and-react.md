@@ -83,7 +83,7 @@ Since Redux is a separate library, there are different "binding" libraries to he
 
 ## Using Redux with React
 
-The official [**React-Redux UI bindings library**](https://react-redux.js.org) is a separate package from the Redux core. You'll need to install that in addition as well:
+The official [**React-Redux UI bindings library**](https://react-redux.js.org) is a separate package from the Redux core. You'll need to install that in addition:
 
 ```sh
 npm install react-redux
@@ -115,7 +115,7 @@ Beyond this basic component structure, we could potentially divide the component
 
 For now, we'll start with this small list of components to keep things easier to follow. On that note, since we assume that [you already know React](https://reactjs.org), **we're going to skip past the details of how to write the layout code for these components and focus on how to actually use the React-Redux library in your React components**.
 
-Here's the initial React UI of this app looks like before we start adding any Redux-related logic:
+Here's the initial React UI of this app before we start adding any Redux-related logic:
 
 <iframe
   class="codesandbox"
@@ -274,7 +274,7 @@ export default Header
 
 Our components can now read state from the store, and dispatch actions to the store. However, we're still missing something. Where and how are the React-Redux hooks finding the right Redux store? A hook is a JS function, so it can't automatically import a store from `store.js` by itself.
 
-Instead, we have to specifically tell React-Redux what store we want to use in our components. We do this by **rendering a `<Provider>` component around our entire `<App>`, and passing the Redux store as a prop to `<Provider>`**. After we do this once, every component in the application will be able to access the Redux store if needs to.
+Instead, we have to specifically tell React-Redux what store we want to use in our components. We do this by **rendering a `<Provider>` component around our entire `<App>`, and passing the Redux store as a prop to `<Provider>`**. After we do this once, every component in the application will be able to access the Redux store if it needs to.
 
 Let's add that to our main `index.js` file:
 

@@ -190,7 +190,7 @@ const todoAppState = {
 }
 ```
 
-It's important to note that **it's okay to have other state values outside of Redux!**. This example is small enough so far that we actually do have all our state in the Redux store, but as we'll see later, some data really doesn't need to be kept in Redux (like "is this dropdown open?" or "current value of a form input").
+It's important to note that **it's okay to have other state values outside of Redux!** This example is small enough so far that we actually do have all our state in the Redux store, but as we'll see later, some data really doesn't need to be kept in Redux (like "is this dropdown open?" or "current value of a form input").
 
 ### Designing Actions
 
@@ -221,14 +221,14 @@ Based on that list of things that can happen, we can create a list of actions th
 
 - `{type: 'todos/todoAdded', payload: todoText}`
 - `{type: 'todos/todoToggled', payload: todoId}`
-- `{type: 'todos/colorSelected, payload: {todoId, color}}`
+- `{type: 'todos/colorSelected', payload: {todoId, color}}`
 - `{type: 'todos/todoDeleted', payload: todoId}`
 - `{type: 'todos/allCompleted'}`
 - `{type: 'todos/completedCleared'}`
 - `{type: 'filters/statusFilterChanged', payload: filterValue}`
 - `{type: 'filters/colorFilterChanged', payload: {color, changeType}}`
 
-In this case, the actions primarily have a single extra piece of data apiece, so we can put that directly in the `action.payload` field. We could have split the color filter behavior into two actions, one for "added" and one for "removed", but in this case
+In this case, the actions primarily have a single extra piece of data, so we can put that directly in the `action.payload` field. We could have split the color filter behavior into two actions, one for "added" and one for "removed", but in this case
 we'll do it as one action with an extra field inside specifically to show that we can have objects as an action payload.
 
 Like the state data, **actions should contain the smallest amount of information needed to describe what happened**.
@@ -277,7 +277,7 @@ A reducer may be called with `undefined` as the state value when the application
 
 Next, let's add the logic to handle the `'todos/todoAdded'` action.
 
-We know we need to check to see the current action's type matches that specific string.
+We first need to check if the current action's type matches that specific string.
 Then, we need to return a new object containing _all_ of the state, even for the fields
 that didn't change.
 

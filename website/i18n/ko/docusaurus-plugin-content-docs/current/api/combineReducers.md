@@ -105,7 +105,7 @@ export default combineReducers({
 import { createStore } from 'redux'
 import reducer from './reducers/index'
 
-let store = createStore(reducer)
+const store = createStore(reducer)
 console.log(store.getState())
 // {
 //   counter: 0,

@@ -84,7 +84,7 @@ _(any)_: 애플리케이션의 현재 상태 트리.
 
 ```js
 import { createStore } from 'redux'
-let store = createStore(todos, ['Use Redux'])
+const store = createStore(todos, ['Use Redux'])
 
 function addTodo(text) {
   return {
@@ -97,7 +97,7 @@ store.dispatch(addTodo('Read the docs'))
 store.dispatch(addTodo('Read about the middleware'))
 ```
 
---
+---
 
 ### [`subscribe(listener)`](#subscribe)
 
@@ -145,11 +145,11 @@ function handleChange() {
   }
 }
 
-let unsubscribe = store.subscribe(handleChange)
+const unsubscribe = store.subscribe(handleChange)
 unsubscribe()
 ```
 
---
+---
 
 ### [`replaceReducer(nextReducer)`](#replaceReducer)
 

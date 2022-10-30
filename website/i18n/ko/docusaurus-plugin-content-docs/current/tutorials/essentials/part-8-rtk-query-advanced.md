@@ -288,20 +288,23 @@ If we want to fetch the list of users outside of React, we can dispatch the `get
 // highlight-next-line
 import { apiSlice } from './features/api/apiSlice'
 
-// Start our mock API server
-worker.start({ onUnhandledRequest: 'bypass' })
+async function main() {
+  // Start our mock API server
+  await worker.start({ onUnhandledRequest: 'bypass' })
 
-// highlight-next-line
-store.dispatch(apiSlice.endpoints.getUsers.initiate())
+  // highlight-next-line
+  store.dispatch(apiSlice.endpoints.getUsers.initiate())
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+  ReactDOM.render(
+    <React.StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </React.StrictMode>,
+    document.getElementById('root')
+  )
+}
+main()
 ```
 
 This dispatch happens automatically inside the query hooks, but we can start it manually if needed.
@@ -405,15 +408,35 @@ export const selectUsersResult = extendedApiSlice.endpoints.getUsers.select()
 
 At the moment, the only file that references the `getUsers` endpoint is our index file, which is dispatching the `initiate` thunk. We need to update that to import the extended API slice instead:
 
-```js title="index.js"
-// highlight-next-line
-import { extendedApiSlice } from './features/users/usersSlice'
+```diff title="index.js"
+  // omit other imports
+  // highlight-start
+- import { apiSlice } from './features/api/apiSlice'
++ import { extendedApiSlice } from './features/users/usersSlice'
+  // highlight-end
 
-// Start our mock API server
-worker.start({ onUnhandledRequest: 'bypass' })
 
-// highlight-next-line
-store.dispatch(extendedApiSlice.endpoints.getUsers.initiate())
+  async function main() {
+    // Start our mock API server
+    await worker.start({ onUnhandledRequest: 'bypass' })
+
+
+    // highlight-start
+-   store.dispatch(apiSlice.endpoints.getUsers.initiate())
++   store.dispatch(extendedApiSlice.endpoints.getUsers.initiate())
+    // highlight-end
+
+
+    ReactDOM.render(
+      <React.StrictMode>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </React.StrictMode>,
+      document.getElementById('root')
+    )
+  }
+  main()
 ```
 
 Alternately, you could just export the specific endpoints themselves from the slice file.
@@ -557,7 +580,7 @@ export const UserPage = ({ match }) => {
 
 There's a key difference with the memoized selector function we've created here. Normally, [selectors expect the entire Redux `state` as their first argument](../../usage/deriving-data-selectors.md), and extract or derive a value from `state`. However, in this case we're only dealing with the "result" value that is kept in the cache. The result object has a `data` field inside with the actual values we need, as well as some of the request metadata fields.
 
-Our `selectFromResult` callback receives the `result` object containing the original request metadata and the `data` from the server, and should return some extracted or derived values. Because query hooks add an additional `refetch` method to whatever is returned here, it's preferably to always return an object from `selectFromResult` with the fields inside that you need.
+Our `selectFromResult` callback receives the `result` object containing the original request metadata and the `data` from the server, and should return some extracted or derived values. Because query hooks add an additional `refetch` method to whatever is returned here, it's preferable to always return an object from `selectFromResult` with the fields inside that you need.
 
 Since `result` is being kept in the Redux store, we can't mutate it - we need to return a new object. The query hook will do a "shallow" comparison on this returned object, and only re-render the component if one of the fields has changed. We can optimize re-renders by only returning the specific fields needed by this component - if we don't need the rest of the metadata flags, we could omit them entirely. If you do need them, you can spread the original `result` value to include them in the output.
 

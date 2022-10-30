@@ -1,9 +1,8 @@
 import React from 'react'
-import {translate} from '@docusaurus/Translate'
 
 export const DetailedExplanation = ({
   children,
-  title = translate({message:'Detailed Explanation'})
+  title = 'Detailed Explanation'
 }) => {
   return (
     <details className="detailed-explanation">

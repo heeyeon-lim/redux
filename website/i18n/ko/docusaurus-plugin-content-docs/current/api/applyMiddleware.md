@@ -36,7 +36,7 @@ function logger({ getState }) {
     console.log('will dispatch', action)
 
     // Call the next dispatch method in the middleware chain.
-    let returnValue = next(action)
+    const returnValue = next(action)
 
     console.log('state after dispatch', getState())
 
@@ -46,7 +46,7 @@ function logger({ getState }) {
   }
 }
 
-let store = createStore(todos, ['Use Redux'], applyMiddleware(logger))
+const store = createStore(todos, ['Use Redux'], applyMiddleware(logger))
 
 store.dispatch({
   type: 'ADD_TODO',
@@ -64,9 +64,9 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import * as reducers from './reducers'
 
-let reducer = combineReducers(reducers)
+const reducer = combineReducers(reducers)
 // applyMiddleware supercharges createStore with middleware:
-let store = createStore(reducer, applyMiddleware(thunk))
+const store = createStore(reducer, applyMiddleware(thunk))
 
 function fetchSecretSauce() {
   return fetch('https://www.google.com/search?q=secret+sauce')
@@ -75,7 +75,6 @@ function fetchSecretSauce() {
 // These are the normal action creators you have seen so far.
 // The actions they return can be dispatched without any middleware.
 // However, they only express “facts” and not the “async flow”.
-
 function makeASandwich(forPerson, secretSauce) {
   return {
     type: 'MAKE_SANDWICH',
@@ -109,12 +108,10 @@ store.dispatch(withdrawMoney(100))
 // Meet thunks.
 // A thunk is a function that returns a function.
 // This is a thunk.
-
 function makeASandwichWithSecretSauce(forPerson) {
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
   // Thunk middleware knows how to turn thunk async actions into actions.
-
   return function (dispatch) {
     return fetchSecretSauce().then(
       sauce => dispatch(makeASandwich(forPerson, sauce)),
@@ -125,12 +122,10 @@ function makeASandwichWithSecretSauce(forPerson) {
 
 // Thunk middleware lets me dispatch thunk async actions
 // as if they were actions!
-
 store.dispatch(makeASandwichWithSecretSauce('Me'))
 
 // It even takes care to return the thunk's return value
 // from the dispatch, so I can chain Promises as long as I return them.
-
 store.dispatch(makeASandwichWithSecretSauce('My wife')).then(() => {
   console.log('Done!')
 })
@@ -138,19 +133,16 @@ store.dispatch(makeASandwichWithSecretSauce('My wife')).then(() => {
 // In fact I can write action creators that dispatch
 // actions and async actions from other action creators,
 // and I can build my control flow with Promises.
-
 function makeSandwichesForEverybody() {
   return function (dispatch, getState) {
     if (!getState().sandwiches.isShopOpen) {
       // You don't have to return Promises, but it's a handy convention
       // so the caller can always call .then() on async dispatch result.
-
       return Promise.resolve()
     }
 
     // We can dispatch both plain object actions and other thunks,
     // which lets us compose the asynchronous actions in a single flow.
-
     return dispatch(makeASandwichWithSecretSauce('My Grandma'))
       .then(() =>
         Promise.all([
@@ -181,23 +173,17 @@ store
 // I can also dispatch a thunk async action from a component
 // any time its props change to load the missing data.
 
+import React from 'react'
 import { connect } from 'react-redux'
-import { Component } from 'react'
 
-class SandwichShop extends Component {
-  componentDidMount() {
-    this.props.dispatch(makeASandwichWithSecretSauce(this.props.forPerson))
-  }
+function SandwichShop(props) {
+  const { dispatch, forPerson } = props
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.forPerson !== this.props.forPerson) {
-      this.props.dispatch(makeASandwichWithSecretSauce(nextProps.forPerson))
-    }
-  }
+  useEffect(() => {
+    dispatch(makeASandwichWithSecretSauce(forPerson))
+  }, [forPerson])
 
-  render() {
-    return <p>{this.props.sandwiches.join('mustard')}</p>
-  }
+  return <p>{this.props.sandwiches.join('mustard')}</p>
 }
 
 export default connect(state => ({
@@ -216,8 +202,8 @@ export default connect(state => ({
   ```js
   let middleware = [a, b]
   if (process.env.NODE_ENV !== 'production') {
-    let c = require('some-debug-middleware')
-    let d = require('another-debug-middleware')
+    const c = require('some-debug-middleware')
+    const d = require('another-debug-middleware')
     middleware = [...middleware, c, d]
   }
 

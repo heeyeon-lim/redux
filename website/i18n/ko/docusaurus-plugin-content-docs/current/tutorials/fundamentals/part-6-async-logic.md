@@ -168,7 +168,11 @@ As it turns out, Redux already has an official version of that "async function m
 
 :::info
 
-The word "thunk" is a programming term that means ["a piece of code that does some delayed work"](https://en.wikipedia.org/wiki/Thunk). For more details, see these posts:
+The word "thunk" is a programming term that means ["a piece of code that does some delayed work"](https://en.wikipedia.org/wiki/Thunk). For more details on how to use thunks, see the thunk usage guide page:
+
+- [Using Redux: Writing Logic with Thunks](../../usage/writing-logic-thunks.mdx)
+
+as well as these posts:
 
 - [What the heck is a thunk?](https://daveceddia.com/what-is-a-thunk/)
 - [Thunks in Redux: the basics](https://medium.com/fullstack-academy/thunks-in-redux-the-basics-85e538a3fe60)
@@ -430,7 +434,7 @@ Thunk functions can be used for both asynchronous _and_ synchronous logic. Thunk
 
 ## What You've Learned
 
-We've now succesfully updated our todo app so that we can fetch a list of todo items and save new todo items, using "thunk" functions to make the AJAX calls to our fake server API.
+We've now successfully updated our todo app so that we can fetch a list of todo items and save new todo items, using "thunk" functions to make the AJAX calls to our fake server API.
 
 In the process, we saw how Redux middleware are used to let us make async calls and interact with the store by dispatching actions with after the async calls have completed.
 

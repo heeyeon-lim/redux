@@ -2,6 +2,7 @@
 id: overview
 title: 'Redux Toolkit: 개요'
 description: 'Redux Toolkit은 Redux 로직 작성을 위해 권장하는 방법입니다'
+hide_title: true
 ---
 
 ## Redux Toolkit이 뭐죠?
@@ -34,7 +35,7 @@ Redux 코어 라이브러리는 의도적으로 특정한 방향을 배제하고
 - "쓸만하게 되려면 너무 많은 패키지들을 더 설치해야 한다"
 - "보일러플레이트 코드를 너무 많이 필요로 한다"
 
-모든 경우를 해결할 수야 없지만, [`create-react-app`](https://github.com/facebook/create-react-app)와 [`apollo-boost`](https://dev-blog.apollodata.com/zero-config-graphql-state-management-27b1f1b3c2c3)처럼 대부분의 경우를 다뤄주고 내려야 하는 결정을 줄여주는 공식 도구를 제공하기로 했습니다.
+모든 경우를 해결할 수야 없지만, [`create-react-app`](https://github.com/facebook/create-react-app)와 [`apollo-boost`](https://www.apollographql.com/blog/announcement/frontend/zero-config-graphql-state-management/)처럼 대부분의 경우를 다뤄주고 내려야 하는 결정을 줄여주는 공식 도구를 제공하기로 했습니다.
 
 ## 왜 Redux Toolkit을 사용해야 하나요?
 

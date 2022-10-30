@@ -1,6 +1,8 @@
 ---
 id: faq
 title: FAQ 색인
+sidebar_label: FAQ 색인
+description: 'FAQ 색인: Redux에 대해 자주 묻는 질문들'
 ---
 
 # Redux FAQ
@@ -57,8 +59,8 @@ title: FAQ 색인
   - [왜 mapDispatchToProps에서 `getState()`이나 `mapStateToProps()`의 리턴값을 사용할 수 없나요?](faq/DesignDecisions.md#why-doesnt-mapdispatchtoprops-allow-use-of-return-values-from-getstate-or-mapstatetoprops)
 - **React Redux**
   - [왜 React-Redux를 사용해야 하나요?](faq/ReactRedux.md#why-should-i-use-react-redux)
-  - [왜 내 컴포넌트가 다시 랜더링되지 않나요? 왜 내 mapStateToProps가 작동하지 않나요?](faq/ReactRedux.md#why-isnt-my-component-re-rendering-or-my-mapstatetoprops-running)
-  - [왜 컴포넌트가 너무 자주 다시 랜더링되나요?](faq/ReactRedux.md#why-is-my-component-re-rendering-too-often)
+  - [왜 내 컴포넌트가 다시 렌더링되지 않나요? 왜 내 mapStateToProps가 작동하지 않나요?](faq/ReactRedux.md#why-isnt-my-component-re-rendering-or-my-mapstatetoprops-running)
+  - [왜 컴포넌트가 너무 자주 다시 렌더링되나요?](faq/ReactRedux.md#why-is-my-component-re-rendering-too-often)
   - [mapStateToProps 속도를 더 빠르게 할 수는 없나요?](faq/ReactRedux.md#how-can-i-speed-up-my-mapstatetoprops)
   - [연결된 컴포넌트에서 this.props.dispatch를 사용할 수 없는 이유가 뭔가요?](faq/ReactRedux.md#why-dont-i-have-this-props-dispatch-available-in-my-connected-component)
   - [최상단 컴포넌트만 연결해야 하나요? 아니면 트리 내에서 여러 컴포넌트를 연결해도 되나요?](faq/ReactRedux.md#should-i-only-connect-my-top-component-or-can-i-connect-multiple-components-in-my-tree)
