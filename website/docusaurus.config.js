@@ -144,9 +144,9 @@ module.exports = {
       copyright: `Copyright © 2015–${new Date().getFullYear()} Dan Abramov and the Redux documentation authors.`
     },
     algolia: {
-      appId: '45GSH5CLSZ',
-      apiKey: '5a44abbe04b2f0cc654b284ea9149f18',
-      indexName: 'redux-ko',
+      appId: 'CVMQ0U66MO',
+      apiKey: '5ab328c0324648ef9dbd3e82cd633f43',
+      indexName: 'ko-redux-js',
       algoliaOptions: {}
     }
   },
