@@ -25,7 +25,7 @@ For Redux specifically, **"thunks" are a pattern of writing functions with logic
 
 Using thunks requires the [`redux-thunk` middleware](https://github.com/reduxjs/redux-thunk) to be added to the Redux store as part of its configuration.
 
-Thunks are [the standard approach for writing async logic in Redux apps](../style-guide/style-guide.md#use-thunks-for-async-logic), and are commonly used for data fetching. However, they can be used for a variety of tasks, and can contain both synchronous and asynchronous logic.
+Thunks are [a standard approach for writing async logic in Redux apps](../style-guide/style-guide.md#use-thunks-and-listeners-for-other-async-logic), and are commonly used for data fetching. However, they can be used for a variety of tasks, and can contain both synchronous and asynchronous logic.
 
 ### Writing Thunks
 
@@ -138,19 +138,16 @@ The actual implementation of the thunk middleware is very short - only about 10 
 // 1) Accepts `{dispatch, getState}`
 // 2) Accepts `next`
 // 3) Accepts `action`
-const thunkMiddleware =
-  ({ dispatch, getState }) =>
-  next =>
-  action => {
-    // If the "action" is actually a function instead...
-    if (typeof action === 'function') {
-      // then call the function and pass `dispatch` and `getState` as arguments
-      return action(dispatch, getState)
-    }
-
-    // Otherwise, it's a normal action - send it onwards
-    return next(action)
+const thunkMiddleware = ({ dispatch, getState }) => next => action => {
+  // If the "action" is actually a function instead...
+  if (typeof action === 'function') {
+    // then call the function and pass `dispatch` and `getState` as arguments
+    return action(dispatch, getState)
   }
+
+  // Otherwise, it's a normal action - send it onwards
+  return next(action)
+}
 ```
 
 In other words:
@@ -189,13 +186,16 @@ There can only be one extra argument value. If you need to pass in multiple valu
 The thunk function will then receive that extra value as its third argument:
 
 ```js title="Thunk function with extra argument"
-export const fetchTodoById =
-  todoId => async (dispatch, getState, extraArgument) => {
-    // In this example, the extra arg is an object with an API service inside
-    const { serviceApi } = extraArgument
-    const response = await serviceApi.getTodo(todoId)
-    dispatch(todosLoaded(response.todos))
-  }
+export const fetchTodoById = todoId => async (
+  dispatch,
+  getState,
+  extraArgument
+) => {
+  // In this example, the extra arg is an object with an API service inside
+  const { serviceApi } = extraArgument
+  const response = await serviceApi.getTodo(todoId)
+  dispatch(todosLoaded(response.todos))
+}
 ```
 
 ## Thunk Usage Patterns

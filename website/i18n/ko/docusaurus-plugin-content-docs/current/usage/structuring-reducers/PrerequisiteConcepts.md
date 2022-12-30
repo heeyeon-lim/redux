@@ -72,8 +72,7 @@ description: '리듀서 구조 잡기 > 사전에 요구되는 개념들: Key co
 - [리액트에서 불변성을 사용할 떄의 장단점](http://reactkungfu.com/2015/08/pros-and-cons-of-using-immutability-with-react-js/)
 - [자바스크립트와 불변성](http://t4d.io/javascript-and-immutability/)
 - [ES6이상에서의 불변데이터](http://wecodetheweb.com/2016/02/12/immutable-javascript-using-es6-and-beyond/)
-- [스크래치의 불변데이터](https://ryanfunduk.com/articles/immutable-data-from-scratch/)
-- [리덕스 도큐먼트: 객체전개연산자 사용](../UsingObjectSpreadOperator.md)
+- [리덕스 문서: 객체전개연산자 사용](../UsingObjectSpreadOperator.md)
 
 #### 데이터 정규화
 

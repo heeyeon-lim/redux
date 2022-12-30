@@ -1,6 +1,6 @@
 ---
 id: core-concepts
-title: Core Concepts
+title: 핵심 Concepts
 description: "Introduction > Core Concepts: A quick overview of Redux's key idea, reducer functions"
 ---
 

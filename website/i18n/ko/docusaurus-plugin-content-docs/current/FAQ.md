@@ -18,7 +18,7 @@ description: 'FAQ 색인: Redux에 대해 자주 묻는 질문들'
   - [두 리듀서의 상태를 공유하는 방법은? CombineReducers를 사용해야 하나요?](faq/Reducers.md#how-do-i-share-state-between-two-reducers-do-i-have-to-use-combinereducers)
   - [액션을 다루기 위해 switch 구문을 사용해야 하나요?](faq/Reducers.md#do-i-have-to-use-the-switch-statement-to-handle-actions)
 - **상태 조직하기**
-  - [상태 전부를 Redux에 넣어야 하나요? React의 setState()를 사용해도 되나요?](faq/OrganizingState.md#do-i-have-to-put-all-my-state-into-redux-should-i-ever-use-reacts-setstate)
+  - [상태 전부를 Redux에 넣어야 하나요? React의 `useState`나 `useReducer`를 사용해도 되나요?](faq/OrganizingState.md#do-i-have-to-put-all-my-state-into-redux-should-i-ever-use-reacts-setstate)
   - [함수나 Promise 같은 직렬화 할 수 없는 것들을 상태 저장소에 넣어도 되나요?](faq/OrganizingState.md#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state)
   - [중첩되거나 중복된 값을 상태에 넣어도 되나요?](faq/OrganizingState.md#how-do-i-organize-nested-or-duplicate-data-in-my-state)
   - [폼이나 다른 UI 상태를 저장소에 넣어도 되나요?](faq/OrganizingState.md#should-i-put-form-state-or-other-ui-state-in-my-store)
