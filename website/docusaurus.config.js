@@ -159,6 +159,10 @@ module.exports = {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           showLastUpdateTime: true,
+          include: [
+            '{api,faq,introduction,redux-toolkit,style-guide,tutorials,understanding,usage}/**/*.{md,mdx}',
+            'FAQ.md'
+          ], // no other way to exclude node_modules
           editUrl: 'https://github.com/reduxjs/redux/edit/master/website',
           remarkPlugins: [
             [
