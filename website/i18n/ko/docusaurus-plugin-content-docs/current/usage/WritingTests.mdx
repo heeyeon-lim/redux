@@ -164,6 +164,7 @@ export type RootState = ReturnType<typeof rootReducer>
 export type AppStore = ReturnType<typeof setupStore>
 export type AppDispatch = AppStore['dispatch']
 ```
+
 ```ts title="app/hooks.ts"
 // file: features/users/userSlice.ts noEmit
 import { createSlice } from '@reduxjs/toolkit'
@@ -366,7 +367,7 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 export function renderWithProviders(
   ui: React.ReactElement,
   {
-    preloadedState= {},
+    preloadedState = {},
     // Automatically create a store instance if no store was passed in
     store = configureStore({ reducer: { user: userReducer }, preloadedState }),
     ...renderOptions
@@ -456,7 +457,6 @@ export type AppDispatch = AppStore['dispatch']
 import React, { PropsWithChildren } from 'react'
 import { render } from '@testing-library/react'
 import type { RenderOptions } from '@testing-library/react'
-import { configureStore } from '@reduxjs/toolkit'
 import type { PreloadedState } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 
@@ -530,7 +530,6 @@ export type AppDispatch = AppStore['dispatch']
 import React, { PropsWithChildren } from 'react'
 import { render } from '@testing-library/react'
 import type { RenderOptions } from '@testing-library/react'
-import { configureStore } from '@reduxjs/toolkit'
 import type { PreloadedState } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
 
@@ -755,7 +754,9 @@ test('should handle a todo being added to an empty list', () => {
 })
 
 test('should handle a todo being added to an existing list', () => {
-  const previousState: Todo[] = [{ text: 'Run the tests', completed: true, id: 0 }]
+  const previousState: Todo[] = [
+    { text: 'Run the tests', completed: true, id: 0 }
+  ]
 
   expect(reducer(previousState, todoAdded('Use Redux'))).toEqual([
     { text: 'Run the tests', completed: true, id: 0 },
@@ -797,16 +798,13 @@ Middleware functions wrap behavior of `dispatch` calls in Redux, so to test this
 First, we'll need a middleware function. This is similar to the real [redux-thunk](https://github.com/reduxjs/redux-thunk/blob/master/src/index.ts).
 
 ```js
-const thunkMiddleware =
-  ({ dispatch, getState }) =>
-  next =>
-  action => {
-    if (typeof action === 'function') {
-      return action(dispatch, getState)
-    }
-
-    return next(action)
+const thunkMiddleware = ({ dispatch, getState }) => next => action => {
+  if (typeof action === 'function') {
+    return action(dispatch, getState)
   }
+
+  return next(action)
+}
 ```
 
 We need to create fake `getState`, `dispatch`, and `next` functions. We use `jest.fn()` to create stubs, but with other test frameworks you would likely use [Sinon](https://sinonjs.org/).
