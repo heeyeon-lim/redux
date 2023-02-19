@@ -5,9 +5,8 @@ import {
   Action,
   StoreEnhancer,
   Unsubscribe,
-  Observer,
-  ExtendState
-} from '../..'
+  Observer
+} from 'redux'
 import 'symbol-observable'
 
 type BrandedString = string & { _brand: 'type' }
@@ -20,46 +19,6 @@ type State = {
     d: 'd'
   }
   e: BrandedString
-}
-
-/* extended state */
-const noExtend: ExtendState<State, never> = {
-  a: 'a',
-  b: {
-    c: 'c',
-    d: 'd'
-  },
-  e: brandedString
-}
-
-const noExtendError: ExtendState<State, never> = {
-  a: 'a',
-  b: {
-    c: 'c',
-    d: 'd'
-  },
-  e: brandedString,
-  // @ts-expect-error
-  f: 'oops'
-}
-
-const yesExtend: ExtendState<State, { yes: 'we can' }> = {
-  a: 'a',
-  b: {
-    c: 'c',
-    d: 'd'
-  },
-  e: brandedString,
-  yes: 'we can'
-}
-// @ts-expect-error
-const yesExtendError: ExtendState<State, { yes: 'we can' }> = {
-  a: 'a',
-  b: {
-    c: 'c',
-    d: 'd'
-  },
-  e: brandedString
 }
 
 interface DerivedAction extends Action {

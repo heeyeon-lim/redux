@@ -490,8 +490,8 @@ Whenever an action is dispatched:
 Any middleware can return any value, and the return value from the first middleware in the pipeline is actually returned when you call `store.dispatch()`. For example:
 
 ```js
-const alwaysReturnHelloMiddleware = storeAPI => next => action {
-  const originalResult = next(action);
+const alwaysReturnHelloMiddleware = storeAPI => next => action => {
+  const originalResult = next(action)
   // Ignore the original result, return something else
   return 'Hello!'
 }
@@ -499,7 +499,7 @@ const alwaysReturnHelloMiddleware = storeAPI => next => action {
 const middlewareEnhancer = applyMiddleware(alwaysReturnHelloMiddleware)
 const store = createStore(rootReducer, middlewareEnhancer)
 
-const dispatchResult = store.dispatch({type: 'some/action'})
+const dispatchResult = store.dispatch({ type: 'some/action' })
 console.log(dispatchResult)
 // log: 'Hello!'
 ```

@@ -6,7 +6,7 @@ import {
   StoreEnhancer,
   Dispatch,
   Observer,
-  ExtendState
+  ListenerCallback
 } from './types/store'
 import { Action } from './types/actions'
 import { Reducer } from './types/reducers'
@@ -15,59 +15,84 @@ import isPlainObject from './utils/isPlainObject'
 import { kindOf } from './utils/kindOf'
 
 /**
- * Creates a Redux store that holds the state tree.
- * The only way to change the data in the store is to call `dispatch()` on it.
+ * @deprecated
  *
- * There should only be a single store in your app. To specify how different
- * parts of the state tree respond to actions, you may combine several reducers
- * into a single reducer function by using `combineReducers`.
+ * **We recommend using the `configureStore` method
+ * of the `@reduxjs/toolkit` package**, which replaces `createStore`.
  *
- * @param reducer A function that returns the next state tree, given
- * the current state tree and the action to handle.
+ * Redux Toolkit is our recommended approach for writing Redux logic today,
+ * including store setup, reducers, data fetching, and more.
  *
- * @param preloadedState The initial state. You may optionally specify it
- * to hydrate the state from the server in universal apps, or to restore a
- * previously serialized user session.
- * If you use `combineReducers` to produce the root reducer function, this must be
- * an object with the same shape as `combineReducers` keys.
+ * **For more details, please read this Redux docs page:**
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
  *
- * @param enhancer The store enhancer. You may optionally specify it
- * to enhance the store with third-party capabilities such as middleware,
- * time travel, persistence, etc. The only store enhancer that ships with Redux
- * is `applyMiddleware()`.
+ * `configureStore` from Redux Toolkit is an improved version of `createStore` that
+ * simplifies setup and helps avoid common bugs.
  *
- * @returns A Redux store that lets you read the state, dispatch actions
- * and subscribe to changes.
+ * You should not be using the `redux` core package by itself today, except for learning purposes.
+ * The `createStore` method from the core `redux` package will not be removed, but we encourage
+ * all users to migrate to using Redux Toolkit for all Redux code.
+ *
+ * If you want to use `createStore` without this visual deprecation warning, use
+ * the `legacy_createStore` import instead:
+ *
+ * `import { legacy_createStore as createStore} from 'redux'`
+ *
  */
-export default function createStore<
+export function createStore<
   S,
   A extends Action,
-  Ext = {},
-  StateExt = never
+  Ext extends {} = {},
+  StateExt extends {} = {}
 >(
   reducer: Reducer<S, A>,
   enhancer?: StoreEnhancer<Ext, StateExt>
-): Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
-export default function createStore<
+): Store<S, A, StateExt> & Ext
+/**
+ * @deprecated
+ *
+ * **We recommend using the `configureStore` method
+ * of the `@reduxjs/toolkit` package**, which replaces `createStore`.
+ *
+ * Redux Toolkit is our recommended approach for writing Redux logic today,
+ * including store setup, reducers, data fetching, and more.
+ *
+ * **For more details, please read this Redux docs page:**
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * `configureStore` from Redux Toolkit is an improved version of `createStore` that
+ * simplifies setup and helps avoid common bugs.
+ *
+ * You should not be using the `redux` core package by itself today, except for learning purposes.
+ * The `createStore` method from the core `redux` package will not be removed, but we encourage
+ * all users to migrate to using Redux Toolkit for all Redux code.
+ *
+ * If you want to use `createStore` without this visual deprecation warning, use
+ * the `legacy_createStore` import instead:
+ *
+ * `import { legacy_createStore as createStore} from 'redux'`
+ *
+ */
+export function createStore<
   S,
   A extends Action,
-  Ext = {},
-  StateExt = never
+  Ext extends {} = {},
+  StateExt extends {} = {}
 >(
   reducer: Reducer<S, A>,
   preloadedState?: PreloadedState<S>,
   enhancer?: StoreEnhancer<Ext, StateExt>
-): Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
-export default function createStore<
+): Store<S, A, StateExt> & Ext
+export function createStore<
   S,
   A extends Action,
-  Ext = {},
-  StateExt = never
+  Ext extends {} = {},
+  StateExt extends {} = {}
 >(
   reducer: Reducer<S, A>,
   preloadedState?: PreloadedState<S> | StoreEnhancer<Ext, StateExt>,
   enhancer?: StoreEnhancer<Ext, StateExt>
-): Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext {
+): Store<S, A, StateExt> & Ext {
   if (typeof reducer !== 'function') {
     throw new Error(
       `Expected the root reducer to be a function. Instead, received: '${kindOf(
@@ -104,13 +129,14 @@ export default function createStore<
     return enhancer(createStore)(
       reducer,
       preloadedState as PreloadedState<S>
-    ) as Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
+    ) as Store<S, A, StateExt> & Ext
   }
 
   let currentReducer = reducer
   let currentState = preloadedState as S
-  let currentListeners: (() => void)[] | null = []
+  let currentListeners: Map<number, ListenerCallback> | null = new Map()
   let nextListeners = currentListeners
+  let listenerIdCounter = 0
   let isDispatching = false
 
   /**
@@ -122,7 +148,10 @@ export default function createStore<
    */
   function ensureCanMutateNextListeners() {
     if (nextListeners === currentListeners) {
-      nextListeners = currentListeners.slice()
+      nextListeners = new Map()
+      currentListeners.forEach((listener, key) => {
+        nextListeners.set(key, listener)
+      })
     }
   }
 
@@ -187,7 +216,8 @@ export default function createStore<
     let isSubscribed = true
 
     ensureCanMutateNextListeners()
-    nextListeners.push(listener)
+    const listenerId = listenerIdCounter++
+    nextListeners.set(listenerId, listener)
 
     return function unsubscribe() {
       if (!isSubscribed) {
@@ -204,8 +234,7 @@ export default function createStore<
       isSubscribed = false
 
       ensureCanMutateNextListeners()
-      const index = nextListeners.indexOf(listener)
-      nextListeners.splice(index, 1)
+      nextListeners.delete(listenerId)
       currentListeners = null
     }
   }
@@ -262,11 +291,9 @@ export default function createStore<
     }
 
     const listeners = (currentListeners = nextListeners)
-    for (let i = 0; i < listeners.length; i++) {
-      const listener = listeners[i]
+    listeners.forEach(listener => {
       listener()
-    }
-
+    })
     return action
   }
 
@@ -278,11 +305,8 @@ export default function createStore<
    * implement a hot reloading mechanism for Redux.
    *
    * @param nextReducer The reducer for the store to use instead.
-   * @returns The same store instance with a new reducer in place.
    */
-  function replaceReducer<NewState, NewActions extends A>(
-    nextReducer: Reducer<NewState, NewActions>
-  ): Store<ExtendState<NewState, StateExt>, NewActions, StateExt, Ext> & Ext {
+  function replaceReducer(nextReducer: Reducer<S, A>): void {
     if (typeof nextReducer !== 'function') {
       throw new Error(
         `Expected the nextReducer to be a function. Instead, received: '${kindOf(
@@ -291,22 +315,13 @@ export default function createStore<
       )
     }
 
-    // TODO: do this more elegantly
-    ;(currentReducer as unknown as Reducer<NewState, NewActions>) = nextReducer
+    currentReducer = nextReducer
 
     // This action has a similar effect to ActionTypes.INIT.
     // Any reducers that existed in both the new and old rootReducer
     // will receive the previous state. This effectively populates
     // the new state tree with any relevant data from the old one.
     dispatch({ type: ActionTypes.REPLACE } as A)
-    // change the type of the store by casting it to the new store
-    return store as unknown as Store<
-      ExtendState<NewState, StateExt>,
-      NewActions,
-      StateExt,
-      Ext
-    > &
-      Ext
   }
 
   /**
@@ -364,6 +379,98 @@ export default function createStore<
     getState,
     replaceReducer,
     [$$observable]: observable
-  } as unknown as Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
+  } as unknown as Store<S, A, StateExt> & Ext
   return store
+}
+
+/**
+ * Creates a Redux store that holds the state tree.
+ *
+ * **We recommend using `configureStore` from the
+ * `@reduxjs/toolkit` package**, which replaces `createStore`:
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @param {Function} reducer A function that returns the next state tree, given
+ * the current state tree and the action to handle.
+ *
+ * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * to hydrate the state from the server in universal apps, or to restore a
+ * previously serialized user session.
+ * If you use `combineReducers` to produce the root reducer function, this must be
+ * an object with the same shape as `combineReducers` keys.
+ *
+ * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+ * to enhance the store with third-party capabilities such as middleware,
+ * time travel, persistence, etc. The only store enhancer that ships with Redux
+ * is `applyMiddleware()`.
+ *
+ * @returns {Store} A Redux store that lets you read the state, dispatch actions
+ * and subscribe to changes.
+ */
+export function legacy_createStore<
+  S,
+  A extends Action,
+  Ext extends {} = {},
+  StateExt extends {} = {}
+>(
+  reducer: Reducer<S, A>,
+  enhancer?: StoreEnhancer<Ext, StateExt>
+): Store<S, A, StateExt> & Ext
+/**
+ * Creates a Redux store that holds the state tree.
+ *
+ * **We recommend using `configureStore` from the
+ * `@reduxjs/toolkit` package**, which replaces `createStore`:
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @param {Function} reducer A function that returns the next state tree, given
+ * the current state tree and the action to handle.
+ *
+ * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * to hydrate the state from the server in universal apps, or to restore a
+ * previously serialized user session.
+ * If you use `combineReducers` to produce the root reducer function, this must be
+ * an object with the same shape as `combineReducers` keys.
+ *
+ * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+ * to enhance the store with third-party capabilities such as middleware,
+ * time travel, persistence, etc. The only store enhancer that ships with Redux
+ * is `applyMiddleware()`.
+ *
+ * @returns {Store} A Redux store that lets you read the state, dispatch actions
+ * and subscribe to changes.
+ */
+export function legacy_createStore<
+  S,
+  A extends Action,
+  Ext extends {} = {},
+  StateExt extends {} = {}
+>(
+  reducer: Reducer<S, A>,
+  preloadedState?: PreloadedState<S>,
+  enhancer?: StoreEnhancer<Ext, StateExt>
+): Store<S, A, StateExt> & Ext
+export function legacy_createStore<
+  S,
+  A extends Action,
+  Ext extends {} = {},
+  StateExt extends {} = {}
+>(
+  reducer: Reducer<S, A>,
+  preloadedState?: PreloadedState<S> | StoreEnhancer<Ext, StateExt>,
+  enhancer?: StoreEnhancer<Ext, StateExt>
+): Store<S, A, StateExt> & Ext {
+  return createStore(reducer, preloadedState as any, enhancer)
 }

@@ -1,4 +1,4 @@
-import { StoreEnhancer, Action, AnyAction, Reducer, createStore } from '../..'
+import { StoreEnhancer, Action, AnyAction, Reducer, createStore } from 'redux'
 
 interface State {
   someField: 'string'
@@ -57,11 +57,13 @@ function stateExtension() {
       reducer: Reducer<S, A>,
       preloadedState?: any
     ) => {
-      const wrappedReducer: Reducer<S & ExtraState, A> = (state, action) => {
-        const newState = reducer(state, action)
-        return {
-          ...newState,
-          extraField: 'extra'
+      function wrapReducer(reducer: Reducer<S, A>): Reducer<S & ExtraState, A> {
+        return (state, action) => {
+          const newState = reducer(state, action)
+          return {
+            ...newState,
+            extraField: 'extra'
+          }
         }
       }
       const wrappedPreloadedState = preloadedState
@@ -70,7 +72,13 @@ function stateExtension() {
             extraField: 'extra'
           }
         : undefined
-      return createStore(wrappedReducer, wrappedPreloadedState)
+      const store = createStore(wrapReducer(reducer), wrappedPreloadedState)
+      return {
+        ...store,
+        replaceReducer(nextReducer: Reducer<S, A>) {
+          store.replaceReducer(wrapReducer(nextReducer))
+        }
+      }
     }
 
   const store = createStore(reducer, enhancer)
@@ -89,8 +97,10 @@ function extraMethods() {
     createStore =>
     (...args) => {
       const store = createStore(...args)
-      store.method = () => 'foo'
-      return store
+      return {
+        ...store,
+        method: () => 'foo'
+      }
     }
 
   const store = createStore(reducer, enhancer)
@@ -115,11 +125,13 @@ function replaceReducerExtender() {
       reducer: Reducer<S, A>,
       preloadedState?: any
     ) => {
-      const wrappedReducer: Reducer<S & ExtraState, A> = (state, action) => {
-        const newState = reducer(state, action)
-        return {
-          ...newState,
-          extraField: 'extra'
+      function wrapReducer(reducer: Reducer<S, A>): Reducer<S & ExtraState, A> {
+        return (state, action) => {
+          const newState = reducer(state, action)
+          return {
+            ...newState,
+            extraField: 'extra'
+          }
         }
       }
       const wrappedPreloadedState = preloadedState
@@ -128,25 +140,43 @@ function replaceReducerExtender() {
             extraField: 'extra'
           }
         : undefined
-      return createStore(wrappedReducer, wrappedPreloadedState)
+      const store = createStore(wrapReducer(reducer), wrappedPreloadedState)
+      return {
+        ...store,
+        replaceReducer(nextReducer: Reducer<S, A>) {
+          store.replaceReducer(wrapReducer(nextReducer))
+        },
+        method: () => 'foo'
+      }
     }
 
-  const store = createStore(reducer, enhancer)
+  interface PartialState {
+    someField?: 'string'
+    test?: boolean
+  }
 
-  const newReducer = (
-    state: { test: boolean } = { test: true },
-    _: AnyAction
-  ) => state
+  const initialReducer: Reducer<PartialState, Action<unknown>> = () => ({
+    someField: 'string'
+  })
+  const store = createStore<
+    PartialState,
+    Action<unknown>,
+    { method(): string },
+    ExtraState
+  >(initialReducer, enhancer)
 
-  const newStore = store.replaceReducer(newReducer)
-  newStore.getState().test
-  newStore.getState().extraField
+  const newReducer = (state: PartialState = { test: true }, _: AnyAction) =>
+    state
+
+  store.replaceReducer(newReducer)
+  store.getState().test
+  store.getState().extraField
   // @ts-expect-error
-  newStore.getState().wrongField
+  store.getState().wrongField
 
-  const res: string = newStore.method()
+  const res: string = store.method()
   // @ts-expect-error
-  newStore.wrongMethod()
+  store.wrongMethod()
 }
 
 function mhelmersonExample() {
@@ -187,13 +217,8 @@ function mhelmersonExample() {
         const store = createStore(wrappedReducer, wrappedPreloadedState)
         return {
           ...store,
-          replaceReducer<NS, NA extends Action = AnyAction>(
-            nextReducer: (
-              state: (NS & ExtraState) | undefined,
-              action: NA
-            ) => NS & ExtraState
-          ) {
-            const nextWrappedReducer: Reducer<NS & ExtraState, NA> = (
+          replaceReducer(nextReducer: Reducer<S, A>) {
+            const nextWrappedReducer: Reducer<S & ExtraState, A> = (
               state,
               action
             ) => {
@@ -208,25 +233,33 @@ function mhelmersonExample() {
         }
       }
 
-    const store = createStore(reducer, enhancer)
-    store.replaceReducer(reducer)
+    interface PartialState {
+      someField?: 'string'
+      test?: boolean
+    }
+
+    const initialReducer: Reducer<PartialState, Action<unknown>> = () => ({
+      someField: 'string'
+    })
+    const store = createStore<PartialState, Action<unknown>, {}, ExtraState>(
+      initialReducer,
+      enhancer
+    )
+    store.replaceReducer(initialReducer)
 
     store.getState().extraField
     // @ts-expect-error
     store.getState().wrongField
-    // @ts-expect-error
     store.getState().test
 
-    const newReducer = (
-      state: { test: boolean } = { test: true },
-      _: AnyAction
-    ) => state
+    const newReducer = (state: PartialState = { test: true }, _: AnyAction) =>
+      state
 
-    const newStore = store.replaceReducer(newReducer)
-    newStore.getState().test
-    newStore.getState().extraField
+    store.replaceReducer(newReducer)
+    store.getState().test
+    store.getState().extraField
     // @ts-expect-error
-    newStore.getState().wrongField
+    store.getState().wrongField
   }
 }
 
@@ -235,12 +268,12 @@ function finalHelmersonExample() {
     foo: string
   }
 
-  function persistReducer<S, A extends AnyAction>(
+  function persistReducer<S, A extends Action<unknown>>(
     config: any,
     reducer: Reducer<S, A>
   ) {
-    return (state: (S & ExtraState) | undefined, action: AnyAction) => {
-      const newState = reducer(state, action as unknown as A)
+    return (state: (S & ExtraState) | undefined, action: A) => {
+      const newState = reducer(state, action)
       return {
         ...newState,
         foo: 'hi'
@@ -256,7 +289,7 @@ function finalHelmersonExample() {
     persistConfig: any
   ): StoreEnhancer<{}, ExtraState> {
     return createStore =>
-      <S, A extends Action = AnyAction>(
+      <S, A extends Action<unknown>>(
         reducer: Reducer<S, A>,
         preloadedState?: any
       ) => {
@@ -266,31 +299,79 @@ function finalHelmersonExample() {
 
         return {
           ...store,
-          replaceReducer: nextReducer => {
-            return store.replaceReducer(
-              persistReducer(persistConfig, nextReducer)
-            )
+          replaceReducer: (nextReducer: Reducer<S, A>) => {
+            store.replaceReducer(persistReducer(persistConfig, nextReducer))
           },
           persistor
         }
       }
   }
 
-  const store = createStore(reducer, createPersistEnhancer('hi'))
+  interface PartialState {
+    someField?: 'string'
+    test?: boolean
+  }
+
+  const initialReducer: Reducer<PartialState, Action<unknown>> = () => ({
+    someField: 'string'
+  })
+  const store = createStore<PartialState, Action<unknown>, {}, ExtraState>(
+    initialReducer,
+    createPersistEnhancer('hi')
+  )
 
   store.getState().foo
   // @ts-expect-error
   store.getState().wrongField
 
-  const newReducer = (
-    state: { test: boolean } = { test: true },
-    _: AnyAction
-  ) => state
+  const newReducer = (state: PartialState = { test: true }, _: AnyAction) =>
+    state
 
-  const newStore = store.replaceReducer(newReducer)
-  newStore.getState().test
+  store.replaceReducer(newReducer)
+  store.getState().test
   // @ts-expect-error
-  newStore.getState().whatever
+  store.getState().whatever
   // @ts-expect-error
-  newStore.getState().wrongField
+  store.getState().wrongField
+}
+
+function composedEnhancers() {
+  interface State {
+    someState: string
+  }
+  const reducer: Reducer<State> = null as any
+
+  interface Ext1 {
+    enhancer1: string
+  }
+  interface Ext2 {
+    enhancer2: number
+  }
+
+  const enhancer1: StoreEnhancer<Ext1> =
+    createStore => (reducer, preloadedState) => {
+      const store = createStore(reducer, preloadedState)
+      return {
+        ...store,
+        enhancer1: 'foo'
+      }
+    }
+
+  const enhancer2: StoreEnhancer<Ext2> =
+    createStore => (reducer, preloadedState) => {
+      const store = createStore(reducer, preloadedState)
+      return {
+        ...store,
+        enhancer2: 5
+      }
+    }
+
+  const composedEnhancer: StoreEnhancer<Ext1 & Ext2> = createStore =>
+    enhancer2(enhancer1(createStore))
+
+  const enhancedStore = createStore(reducer, composedEnhancer)
+  enhancedStore.enhancer1
+  enhancedStore.enhancer2
+  // @ts-expect-error
+  enhancedStore.enhancer3
 }

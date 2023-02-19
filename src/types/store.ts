@@ -3,20 +3,6 @@ import { Reducer } from './reducers'
 import '../utils/symbol-observable'
 
 /**
- * Extend the state
- *
- * This is used by store enhancers and store creators to extend state.
- * If there is no state extension, it just returns the state, as is, otherwise
- * it returns the state joined with its extension.
- *
- * Reference for future devs:
- * https://github.com/microsoft/TypeScript/issues/31751#issuecomment-498526919
- */
-export type ExtendState<State, Extension> = [Extension] extends [never]
-  ? State
-  : State & Extension
-
-/**
  * Internal "virtual" symbol used to make the `CombinedState` type unique.
  */
 declare const $CombinedState: unique symbol
@@ -91,6 +77,8 @@ export interface Unsubscribe {
   (): void
 }
 
+export type ListenerCallback = () => void
+
 declare global {
   interface SymbolConstructor {
     readonly observable: symbol
@@ -131,13 +119,11 @@ export type Observer<T> = {
  * @template S The type of state held by this store.
  * @template A the type of actions which may be dispatched by this store.
  * @template StateExt any extension to state from store enhancers
- * @template Ext any extensions to the store from store enhancers
  */
 export interface Store<
   S = any,
   A extends Action = AnyAction,
-  StateExt = never,
-  Ext = {}
+  StateExt extends {} = {}
 > {
   /**
    * Dispatches an action. It is the only way to trigger a state change.
@@ -172,7 +158,7 @@ export interface Store<
    *
    * @returns The current state tree of your application.
    */
-  getState(): S
+  getState(): S & StateExt
 
   /**
    * Adds a change listener. It will be called any time an action is
@@ -198,7 +184,7 @@ export interface Store<
    * @param listener A callback to be invoked on every dispatch.
    * @returns A function to remove this change listener.
    */
-  subscribe(listener: () => void): Unsubscribe
+  subscribe(listener: ListenerCallback): Unsubscribe
 
   /**
    * Replaces the reducer currently used by the store to calculate the state.
@@ -209,9 +195,7 @@ export interface Store<
    *
    * @param nextReducer The reducer for the store to use instead.
    */
-  replaceReducer<NewState, NewActions extends Action>(
-    nextReducer: Reducer<NewState, NewActions>
-  ): Store<ExtendState<NewState, StateExt>, NewActions, StateExt, Ext> & Ext
+  replaceReducer(nextReducer: Reducer<S, A>): void
 
   /**
    * Interoperability point for observable/reactive libraries.
@@ -219,7 +203,7 @@ export interface Store<
    * For more information, see the observable proposal:
    * https://github.com/tc39/proposal-observable
    */
-  [Symbol.observable](): Observable<S>
+  [Symbol.observable](): Observable<S & StateExt>
 }
 
 /**
@@ -234,15 +218,15 @@ export interface Store<
  * @template StateExt State extension that is mixed into the state type.
  */
 export interface StoreCreator {
-  <S, A extends Action, Ext = {}, StateExt = never>(
+  <S, A extends Action, Ext extends {} = {}, StateExt extends {} = {}>(
     reducer: Reducer<S, A>,
     enhancer?: StoreEnhancer<Ext, StateExt>
-  ): Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
-  <S, A extends Action, Ext = {}, StateExt = never>(
+  ): Store<S, A, StateExt> & Ext
+  <S, A extends Action, Ext extends {} = {}, StateExt extends {} = {}>(
     reducer: Reducer<S, A>,
     preloadedState?: PreloadedState<S>,
     enhancer?: StoreEnhancer<Ext>
-  ): Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
+  ): Store<S, A, StateExt> & Ext
 }
 
 /**
@@ -266,13 +250,16 @@ export interface StoreCreator {
  * @template Ext Store extension that is mixed into the Store type.
  * @template StateExt State extension that is mixed into the state type.
  */
-export type StoreEnhancer<Ext = {}, StateExt = never> = (
-  next: StoreEnhancerStoreCreator<Ext, StateExt>
-) => StoreEnhancerStoreCreator<Ext, StateExt>
-export type StoreEnhancerStoreCreator<Ext = {}, StateExt = never> = <
-  S = any,
-  A extends Action = AnyAction
+export type StoreEnhancer<Ext extends {} = {}, StateExt extends {} = {}> = <
+  NextExt extends {},
+  NextStateExt extends {}
 >(
+  next: StoreEnhancerStoreCreator<NextExt, NextStateExt>
+) => StoreEnhancerStoreCreator<NextExt & Ext, NextStateExt & StateExt>
+export type StoreEnhancerStoreCreator<
+  Ext extends {} = {},
+  StateExt extends {} = {}
+> = <S = any, A extends Action = AnyAction>(
   reducer: Reducer<S, A>,
   preloadedState?: PreloadedState<S>
-) => Store<ExtendState<S, StateExt>, A, StateExt, Ext> & Ext
+) => Store<S, A, StateExt> & Ext

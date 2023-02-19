@@ -1,4 +1,11 @@
-import { createStore, combineReducers, StoreEnhancer, Action, Store } from '..'
+import {
+  createStore,
+  combineReducers,
+  StoreEnhancer,
+  Action,
+  Store
+} from 'redux'
+import { vi } from 'vitest'
 import {
   addTodo,
   dispatchInMiddle,
@@ -199,8 +206,8 @@ describe('createStore', () => {
 
   it('supports multiple subscriptions', () => {
     const store = createStore(reducers.todos)
-    const listenerA = jest.fn()
-    const listenerB = jest.fn()
+    const listenerA = vi.fn()
+    const listenerB = vi.fn()
 
     let unsubscribeA = store.subscribe(listenerA)
     store.dispatch(unknownAction())
@@ -246,8 +253,8 @@ describe('createStore', () => {
 
   it('only removes listener once when unsubscribe is called', () => {
     const store = createStore(reducers.todos)
-    const listenerA = jest.fn()
-    const listenerB = jest.fn()
+    const listenerA = vi.fn()
+    const listenerB = vi.fn()
 
     const unsubscribeA = store.subscribe(listenerA)
     store.subscribe(listenerB)
@@ -262,7 +269,7 @@ describe('createStore', () => {
 
   it('only removes relevant listener when unsubscribe is called', () => {
     const store = createStore(reducers.todos)
-    const listener = jest.fn()
+    const listener = vi.fn()
 
     store.subscribe(listener)
     const unsubscribeSecond = store.subscribe(listener)
@@ -276,9 +283,9 @@ describe('createStore', () => {
 
   it('supports removing a subscription within a subscription', () => {
     const store = createStore(reducers.todos)
-    const listenerA = jest.fn()
-    const listenerB = jest.fn()
-    const listenerC = jest.fn()
+    const listenerA = vi.fn()
+    const listenerB = vi.fn()
+    const listenerC = vi.fn()
 
     store.subscribe(listenerA)
     const unSubB = store.subscribe(() => {
@@ -302,9 +309,9 @@ describe('createStore', () => {
     const doUnsubscribeAll = () =>
       unsubscribeHandles.forEach(unsubscribe => unsubscribe())
 
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-    const listener3 = jest.fn()
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
+    const listener3 = vi.fn()
 
     unsubscribeHandles.push(store.subscribe(() => listener1()))
     unsubscribeHandles.push(
@@ -329,9 +336,9 @@ describe('createStore', () => {
   it('notifies only subscribers active at the moment of current dispatch', () => {
     const store = createStore(reducers.todos)
 
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-    const listener3 = jest.fn()
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
+    const listener3 = vi.fn()
 
     let listener3Added = false
     const maybeAddThirdListener = () => {
@@ -361,10 +368,10 @@ describe('createStore', () => {
   it('uses the last snapshot of subscribers during nested dispatch', () => {
     const store = createStore(reducers.todos)
 
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-    const listener3 = jest.fn()
-    const listener4 = jest.fn()
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
+    const listener3 = vi.fn()
+    const listener4 = vi.fn()
 
     let unsubscribe4: any
     const unsubscribe1 = store.subscribe(() => {
@@ -400,27 +407,41 @@ describe('createStore', () => {
     expect(listener4.mock.calls.length).toBe(1)
   })
 
-  it('provides an up-to-date state when a subscriber is notified', done => {
+  it('provides an up-to-date state when a subscriber is notified', async () => {
     const store = createStore(reducers.todos)
+
+    let resolve: (value: unknown) => void = () => {}
+    let promise = new Promise(_resolve => {
+      resolve = _resolve
+    })
     store.subscribe(() => {
-      expect(store.getState()).toEqual([
-        {
-          id: 1,
-          text: 'Hello'
-        }
-      ])
-      done()
+      resolve(store.getState())
     })
     store.dispatch(addTodo('Hello'))
+    const state = await promise
+
+    expect(state).toEqual([
+      {
+        id: 1,
+        text: 'Hello'
+      }
+    ])
   })
 
-  it('does not leak private listeners array', done => {
+  it('does not leak private listeners array', async () => {
     const store = createStore(reducers.todos)
+    let resolve: (value: unknown) => void = () => {}
+    let promise = new Promise(_resolve => {
+      resolve = _resolve
+    })
+
     store.subscribe(function (this: any) {
-      expect(this).toBe(undefined)
-      done()
+      resolve(this)
     })
     store.dispatch(addTodo('Hello'))
+    const result = await promise
+
+    expect(result).toBe(undefined)
   })
 
   it('only accepts plain object actions', () => {
@@ -569,7 +590,7 @@ describe('createStore', () => {
         const vanillaStore = vanillaCreateStore(...args)
         return {
           ...vanillaStore,
-          dispatch: jest.fn(vanillaStore.dispatch)
+          dispatch: vi.fn(vanillaStore.dispatch)
         }
       }
 
@@ -595,7 +616,7 @@ describe('createStore', () => {
         const vanillaStore = vanillaCreateStore(...args)
         return {
           ...vanillaStore,
-          dispatch: jest.fn(vanillaStore.dispatch)
+          dispatch: vi.fn(vanillaStore.dispatch)
         }
       }
 
@@ -821,10 +842,10 @@ describe('createStore', () => {
 
   it('does not log an error if parts of the current state will be ignored by a nextReducer using combineReducers', () => {
     const originalConsoleError = console.error
-    console.error = jest.fn()
+    console.error = vi.fn()
 
     const store = createStore(
-      combineReducers({
+      combineReducers<{ x?: number; y: { z: number; w?: number } }>({
         x: (s = 0, _) => s,
         y: combineReducers({
           z: (s = 0, _) => s,

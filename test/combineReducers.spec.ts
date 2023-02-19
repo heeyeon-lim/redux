@@ -5,7 +5,8 @@ import {
   Reducer,
   AnyAction,
   __DO_NOT_USE__ActionTypes as ActionTypes
-} from '..'
+} from 'redux'
+import { vi } from 'vitest'
 
 describe('Utils', () => {
   describe('combineReducers', () => {
@@ -39,7 +40,7 @@ describe('Utils', () => {
 
     it('warns if a reducer prop is undefined', () => {
       const preSpy = console.error
-      const spy = jest.fn()
+      const spy = vi.fn()
       console.error = spy
 
       let isNotDefined: any
@@ -199,7 +200,7 @@ describe('Utils', () => {
 
     it('warns if no reducers are passed to combineReducers', () => {
       const preSpy = console.error
-      const spy = jest.fn()
+      const spy = vi.fn()
       console.error = spy
 
       const reducer = combineReducers({})
@@ -214,7 +215,7 @@ describe('Utils', () => {
 
     it('warns if input state does not match reducer shape', () => {
       const preSpy = console.error
-      const spy = jest.fn()
+      const spy = vi.fn()
       const nullAction = undefined as unknown as AnyAction
       console.error = spy
 
@@ -287,7 +288,7 @@ describe('Utils', () => {
 
     it('only warns for unexpected keys once', () => {
       const preSpy = console.error
-      const spy = jest.fn()
+      const spy = vi.fn()
       console.error = spy
       const nullAction = { type: '' }
 
@@ -327,14 +328,16 @@ describe('Utils', () => {
       const ACTION = { type: 'ACTION' }
 
       it('should return an updated state when additional reducers are passed to combineReducers', function () {
-        const originalCompositeReducer = combineReducers({ foo })
+        type State = { foo: {}; bar?: {} }
+
+        const originalCompositeReducer = combineReducers<State>({ foo })
         const store = createStore(originalCompositeReducer)
 
         store.dispatch(ACTION)
 
         const initialState = store.getState()
 
-        store.replaceReducer(combineReducers({ foo, bar }))
+        store.replaceReducer(combineReducers<State>({ foo, bar }))
         store.dispatch(ACTION)
 
         const nextState = store.getState()
@@ -342,16 +345,18 @@ describe('Utils', () => {
       })
 
       it('should return an updated state when reducers passed to combineReducers are changed', function () {
+        type State = { foo?: {}; bar: {}; baz?: {} }
+
         const baz = (state = {}) => state
 
-        const originalCompositeReducer = combineReducers({ foo, bar })
+        const originalCompositeReducer = combineReducers<State>({ foo, bar })
         const store = createStore(originalCompositeReducer)
 
         store.dispatch(ACTION)
 
         const initialState = store.getState()
 
-        store.replaceReducer(combineReducers({ baz, bar }))
+        store.replaceReducer(combineReducers<State>({ baz, bar }))
         store.dispatch(ACTION)
 
         const nextState = store.getState()
@@ -374,7 +379,9 @@ describe('Utils', () => {
       })
 
       it('should return an updated state when one of more reducers passed to the combineReducers are removed', function () {
-        const originalCompositeReducer = combineReducers({ foo, bar })
+        const originalCompositeReducer = combineReducers<{ foo?: {}; bar: {} }>(
+          { foo, bar }
+        )
         const store = createStore(originalCompositeReducer)
 
         store.dispatch(ACTION)
