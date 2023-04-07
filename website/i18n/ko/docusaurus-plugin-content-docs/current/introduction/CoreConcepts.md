@@ -4,7 +4,7 @@ title: 핵심 Concepts
 description: "Introduction > Core Concepts: A quick overview of Redux's key idea, reducer functions"
 ---
 
-# 핵심 Concepts
+# 핵심 개념
 
 여러분 앱의 state가 평범한 object 형태로 정의되어있다고 생각해보세요. 예를들어, 투두 앱의 상태는 이런식으로 만들어질것입니다:
 
