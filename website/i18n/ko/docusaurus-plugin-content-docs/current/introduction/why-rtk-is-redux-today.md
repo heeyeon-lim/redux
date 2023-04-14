@@ -4,7 +4,7 @@ title: Why Redux Toolkit is How To Use Redux Today
 description: 'Introduction > Why RTK is Redux Today: details on how RTK replaces the Redux core'
 ---
 
-## What is Redux Toolkit?
+## Redux Toolkit은 무엇인가요?
 
 [**Redux Toolkit**](https://redux-toolkit.js.org) (also known as **"RTK"** for short) is our official recommended approach for writing Redux logic. The `@reduxjs/toolkit` package wraps around the core `redux` package, and contains API methods and common dependencies that we think are essential for building a Redux app. Redux Toolkit builds in our suggested best practices, simplifies most Redux tasks, prevents common mistakes, and makes it easier to write Redux applications.
 
