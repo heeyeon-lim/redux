@@ -1,9 +1,2 @@
-Thanks for the PR!
-
-To better assist you, please select the type of PR you want to create.
-
-Click the "Preview" tab above, and click on the link for the PR type:
-
-- [:bug: Bug fix or new feature](?template=bugfix.md)
-- [:memo: Documentation Fix](?template=documentation-edit.md)
-- [:book: New/Updated Documentation Content](?template=documentation-new.md)
+> Redux 한국어 문서 번역에 참여해주셔서 감사합니다.
+> 먼저 PR Draft를 생성하여 번역 진행 중임을 다른 분들에게 알려주세요.
