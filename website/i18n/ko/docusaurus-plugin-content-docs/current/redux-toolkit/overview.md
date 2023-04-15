@@ -59,7 +59,7 @@ Redux Toolkit에 포함된 것들은:
 - [`createEntityAdapter`](https://redux-toolkit.js.org/api/createEntityAdapter): 저장소 내에 정규화된 데이터를 다루기 위한 리듀서와 셀렉터를 만들어줍니다.
 - [`createSelector` 유틸리티](https://redux-toolkit.js.org/api/createSelector)를 [Reselect](https://github.com/reduxjs/reselect) 라이브러리에서 다시 익스포트해서 쓰기 쉽게 해줍니다.
 
-Redux Toolkit에는 새로운 [**RTK Query 데이터 패치 API**](https://redux-toolkit.js.org/rtk-query/overview)도 포함되어 있습니다. RTK Query는 Redux에서 데이터를 가져오고 캐싱하기 위한 강력한 도구입니다. 이 API는 웹 애플리케이션에서 데이터를 불러오는 일반적인 경우에 패치와 캐시 로직을 직접 작성해야 할 필요를 없애줍니다.
+Redux Toolkit에는 [**RTK Query 데이터 패치 API**](https://redux-toolkit.js.org/rtk-query/overview)도 포함되어 있습니다. RTK Query는 Redux에서 데이터를 가져오고 캐싱하기 위한 강력한 도구입니다. 이 API는 웹 애플리케이션에서 데이터를 불러오는 일반적인 경우에 패치와 캐시 로직을 직접 작성해야 할 필요를 없애줍니다.
 
 ## 문서
 
