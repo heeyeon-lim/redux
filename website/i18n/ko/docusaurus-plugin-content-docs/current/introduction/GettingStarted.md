@@ -129,9 +129,9 @@ Redux를 배우는 데 도움이 될 다양한 자료가 있습니다.
 
 [**Redux 핵심 튜토리얼**](../tutorials/essentials/part-1-overview-concepts.md)은 추천 API와 모범 사례를 통해 어떻게 하면 Redux를 올바르게 사용할 수 있는지를 가르쳐주는 "하향식" 튜토리얼입니다. 여기서부터 시작하기를 추천합니다.
 
-### Redux 기반 튜토리얼
+### Redux 기초 튜토리얼
 
-[**Redux 기반 튜토리얼**](../tutorials/fundamentals/part-1-overview.md)은 요약 없이 기초 원리부터 "Redux가 어떻게 동작하는가"와 왜 Redux 표준 패턴이 있는지를 알려주는 "상향식" 튜토리얼입니다.
+[**Redux 기초 튜토리얼**](../tutorials/fundamentals/part-1-overview.md)은 요약 없이 기초 원리부터 "Redux가 어떻게 동작하는가"와 왜 Redux 표준 패턴이 있는지를 알려주는 "상향식" 튜토리얼입니다.
 
 ### 추가 튜토리얼
 

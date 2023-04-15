@@ -10,7 +10,7 @@ The Usage Guides section provides practical guidance on how to correctly use Red
 
 :::info Prerequisites
 
-The pages in this category assume you understand the core Redux terms and concepts explained in ["Redux 기반" 튜토리얼](../tutorials/fundamentals/part-1-overview.md), including actions, reducers, stores, immutability, React-Redux, and async logic.
+The pages in this category assume you understand the core Redux terms and concepts explained in ["Redux 기초" 튜토리얼](../tutorials/fundamentals/part-1-overview.md), including actions, reducers, stores, immutability, React-Redux, and async logic.
 
 :::
 
