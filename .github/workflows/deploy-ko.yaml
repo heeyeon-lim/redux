@@ -1,6 +1,7 @@
 name: Deploy Korean Docs
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -21,8 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install deps
-        run: yarn install --frozen-lockfile
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+
+      - run: yarn install --frozen-lockfile
+      - run: yarn build --locale ko
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
