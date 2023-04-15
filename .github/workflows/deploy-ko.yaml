@@ -1,0 +1,32 @@
+name: Deploy Korean Docs
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'docs/**'
+      - 'website/i18n/**'
+      - 'website/package.json'
+      - 'website/yarn.lock'
+
+jobs:
+  deploy:
+    name: Deploy Korean Docs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./build
